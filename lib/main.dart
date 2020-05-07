@@ -14,6 +14,7 @@ class RemFS {
   RemFS({this.type, this.children});
 }
 
+
 class RemFSDelverApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -39,55 +40,48 @@ class RemFSDelver extends StatefulWidget {
 }
 
 class _RemFSDelverState extends State<RemFSDelver> {
-  int _counter = 0;
 
-  //void _incrementCounter() {
-  //  setState(() {
-  //    _counter++;
-  //  });
-  //}
+  final Map<String, Remote> remotes = new Map();
 
   @override
   Widget build(BuildContext context) {
+
+    print("build");
+
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the RemFSDelver object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Column(
-        //mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          RemoteList(
-          ),
+          RemoteList(remotes: remotes),
           RaisedButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              final remoteUrl = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddRemote()),
+                MaterialPageRoute(builder: (context) => AddRemote(remotes: remotes)),
               );
+
+              if (remoteUrl != null) {
+                setState(() {
+                  remotes[remoteUrl] = new Remote();
+                });
+              }
             },
             child: Text("Add Remote"),
           ),
-          //Text(
-          //  'You have pushed the button this many times:',
-          //),
-          //Text(
-          //  '$_counter',
-          //  style: Theme.of(context).textTheme.headline4,
-          //),
         ],
       ),
-      //floatingActionButton: FloatingActionButton(
-      //  onPressed: _incrementCounter,
-      //  tooltip: 'Increment',
-      //  child: Icon(Icons.add),
-      //),
     );
   }
 }
 
 class AddRemote extends StatefulWidget {
+
+  AddRemote({this.remotes});
+
+  final Map<String, Remote> remotes;
+
   @override
   _AddRemoteState createState() => _AddRemoteState();
 }
@@ -133,22 +127,27 @@ class _AddRemoteState extends State<AddRemote> {
               RaisedButton(
                 child: Text("Access as Public"),
                 onPressed: () {
-                  print("public: " + textController.text);
 
-                  final remfsUrl = textController.text + "/remfs.json";
+                  final remoteUrl = textController.text;
+                  final remfsUrl = remoteUrl + "/remfs.json";
 
-                  http.get(remfsUrl)
-                    .then((response) {
-                      if (response.statusCode != 200) {
-                        print("No public goods");
-                      }
-                      else {
-                        print(response.body);
-                      }
-                    },
-                    onError: (e) {
-                      print("oops");
-                    });
+                  if (!widget.remotes.containsKey(remoteUrl)) {
+                    http.get(remfsUrl)
+                      .then((response) {
+                        if (response.statusCode != 200) {
+                          print("No public goods");
+                        }
+                        else {
+                          Navigator.pop(context, remoteUrl);
+                        }
+                      },
+                      onError: (e) {
+                        print("Error fetching " + remfsUrl);
+                      });
+                  }
+                  else {
+                    print(remoteUrl + " already exists");
+                  }
                 },
                 color: Colors.orange,
               ),
