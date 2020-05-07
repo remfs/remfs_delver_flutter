@@ -118,6 +118,7 @@ class _AddRemoteState extends State<AddRemote> {
               hintText: 'Enter address of remote'
             ),
           ),
+          SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
@@ -128,6 +129,7 @@ class _AddRemoteState extends State<AddRemote> {
                 },
                 color: Colors.orange,
               ),
+              SizedBox(width: 20),
               RaisedButton(
                 child: Text("Access as Public"),
                 onPressed: () {
