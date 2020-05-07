@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'directory.dart';
 
 class Remote {
 }
@@ -24,6 +25,10 @@ class _RemoteListState extends State<RemoteList> {
           title: Text(entry.key),
           onTap: () {
             print(entry.key);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Directory(path: entry.key)),
+            );
           },
         );
       }).toList(),

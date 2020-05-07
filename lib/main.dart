@@ -7,14 +7,6 @@ void main() {
 }
 
 
-class RemFS {
-  final String type;
-  final List<RemFS> children;
-
-  RemFS({this.type, this.children});
-}
-
-
 class RemFSDelverApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -87,8 +79,6 @@ class AddRemote extends StatefulWidget {
 }
 
 class _AddRemoteState extends State<AddRemote> {
-
-  //Future<RemFS> futureRemfs;
 
   final textController = TextEditingController();
 
