@@ -25,18 +25,10 @@ class Directory extends StatelessWidget {
               print(remfs);
 
               List<Widget> children = remfs.children.entries.map((item) {
-                return ListTile(
-                  leading: Icon(item.value.type == 'dir' ? Icons.folder : Icons.insert_drive_file),
-                  title: Text(item.key),
-                  onTap: () {
-                    if (item.value.type == 'dir') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Directory(path: path + '/' + item.key)),
-                      );
-                    }
-                  },
-                );
+                return item.value.type == 'dir' ?
+                  DirectoryListItem(path: path, name: item.key, remfs: item.value)
+                  :
+                  FileListItem(name: item.key, remfs: item.value);
               }).toList();
 
               //return Text("Hi there");
@@ -52,6 +44,49 @@ class Directory extends StatelessWidget {
             }
           },
       ),
+    );
+  }
+}
+
+
+class DirectoryListItem extends StatelessWidget {
+  final String path;
+  final String name;
+  final RemFS remfs;
+
+  DirectoryListItem({this.path, this.name, this.remfs});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.folder),
+      title: Text(name),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Directory(path: path + '/' + name)),
+        );
+      }
+    );
+  }
+}
+
+
+class FileListItem extends StatelessWidget {
+
+  final String name;
+  final RemFS remfs;
+
+  FileListItem({this.name, this.remfs});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.insert_drive_file),
+      title: Text(name),
+      onTap: () {
+        print("file item");
+      },
     );
   }
 }
